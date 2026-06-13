@@ -250,17 +250,29 @@ async function loadClientStatus(client){
     const cpuClass = rdsCpu>30?"crit":rdsCpu>15?"warn":"ok";
     const memClass = rdsMem>95?"crit":rdsMem>85?"warn":"ok";
 
-    document.getElementById("metrics-"+client).innerHTML=`
-      <div class="metric-pill ${rdsOk?'ok':'crit'}"><span>${rds.status}</span></div>
-      <div class="metric-pill ${cpuClass}">CPU <span>${rdsCpu!==null?rdsCpu+"%":"--"}</span></div>
-      <div class="metric-pill ${memClass}">RAM <span>${rdsMem!==null?rdsMem+"%":"--"}</span></div>
-      ${mainMetric?`<div class="metric-pill ok">Pod <span>${mainMetric.cpu_m}m / ${mainMetric.mem_mi}Mi</span></div>`:""}
-      <div class="metric-pill ${podOk?"ok":"crit'}">Pods <span>${podOk?"UP":"DOWN"}</span></div>
-    `;
+    const podColor = podOk ? "#5cb85c" : "#e05c5c";
+    const podLabel = podOk ? "UP" : "DOWN";
+    const rdsClass = rdsOk ? "ok" : "crit";
+    const podMetricHtml = mainMetric ? '<div class="metric-pill ok">Pod <span>' + mainMetric.cpu_m + 'm / ' + mainMetric.mem_mi + 'Mi</span></div>' : "";
+    document.getElementById("metrics-"+client).innerHTML =
+      '<div class="metric-pill ' + rdsClass + '"><span>' + rds.status + '</span></div>' +
+      '<div class="metric-pill ' + cpuClass + '">CPU <span>' + (rdsCpu!==null?rdsCpu+"%":"--") + '</span></div>' +
+      '<div class="metric-pill ' + memClass + '">RAM <span>' + (rdsMem!==null?rdsMem+"%":"--") + '</span></div>' +
+      podMetricHtml +
+      '<div class="metric-pill"><span style="color:' + podColor + '">' + podLabel + '</span></div>';
   }catch(e){
     document.getElementById("sem-"+client).className="semaforo red";
     document.getElementById("card-"+client).className="client-card red";
-    document.getElementById("metrics-"+client).innerHTML=`<div class="metric-pill crit"><span>${e.message}</span></div>`;
+    const podColor = podOk ? "#5cb85c" : "#e05c5c";
+    const podLabel = podOk ? "UP" : "DOWN";
+    const rdsClass = rdsOk ? "ok" : "crit";
+    const podMetricHtml = mainMetric ? '<div class="metric-pill ok">Pod <span>' + mainMetric.cpu_m + 'm / ' + mainMetric.mem_mi + 'Mi</span></div>' : "";
+    document.getElementById("metrics-"+client).innerHTML =
+      '<div class="metric-pill ' + rdsClass + '"><span>' + rds.status + '</span></div>' +
+      '<div class="metric-pill ' + cpuClass + '">CPU <span>' + (rdsCpu!==null?rdsCpu+"%":"--") + '</span></div>' +
+      '<div class="metric-pill ' + memClass + '">RAM <span>' + (rdsMem!==null?rdsMem+"%":"--") + '</span></div>' +
+      podMetricHtml +
+      '<div class="metric-pill"><span style="color:' + podColor + '">' + podLabel + '</span></div>';
   }
 }
 
@@ -272,13 +284,28 @@ async function loadClientHealth(client){
     const card=document.getElementById("card-"+client);
     sem.className="semaforo "+(ok?"green":"red");
     card.className="client-card "+(ok?"green":"red");
-    document.getElementById("metrics-"+client).innerHTML=`
-      <div class="metric-pill ${ok?'ok':'crit'}"><span>${ok?"200 OK":d.status||"Error"}</span></div>
-      <div class="metric-pill ok"><span>${d.response_ms?d.response_ms+"ms":"--"}</span></div>
-    `;
+    const podColor = podOk ? "#5cb85c" : "#e05c5c";
+    const podLabel = podOk ? "UP" : "DOWN";
+    const rdsClass = rdsOk ? "ok" : "crit";
+    const podMetricHtml = mainMetric ? '<div class="metric-pill ok">Pod <span>' + mainMetric.cpu_m + 'm / ' + mainMetric.mem_mi + 'Mi</span></div>' : "";
+    document.getElementById("metrics-"+client).innerHTML =
+      '<div class="metric-pill ' + rdsClass + '"><span>' + rds.status + '</span></div>' +
+      '<div class="metric-pill ' + cpuClass + '">CPU <span>' + (rdsCpu!==null?rdsCpu+"%":"--") + '</span></div>' +
+      '<div class="metric-pill ' + memClass + '">RAM <span>' + (rdsMem!==null?rdsMem+"%":"--") + '</span></div>' +
+      podMetricHtml +
+      '<div class="metric-pill"><span style="color:' + podColor + '">' + podLabel + '</span></div>';
   }catch(e){
     document.getElementById("sem-"+client).className="semaforo red";
-    document.getElementById("metrics-"+client).innerHTML=`<div class="metric-pill crit"><span>Error</span></div>`;
+    const podColor = podOk ? "#5cb85c" : "#e05c5c";
+    const podLabel = podOk ? "UP" : "DOWN";
+    const rdsClass = rdsOk ? "ok" : "crit";
+    const podMetricHtml = mainMetric ? '<div class="metric-pill ok">Pod <span>' + mainMetric.cpu_m + 'm / ' + mainMetric.mem_mi + 'Mi</span></div>' : "";
+    document.getElementById("metrics-"+client).innerHTML =
+      '<div class="metric-pill ' + rdsClass + '"><span>' + rds.status + '</span></div>' +
+      '<div class="metric-pill ' + cpuClass + '">CPU <span>' + (rdsCpu!==null?rdsCpu+"%":"--") + '</span></div>' +
+      '<div class="metric-pill ' + memClass + '">RAM <span>' + (rdsMem!==null?rdsMem+"%":"--") + '</span></div>' +
+      podMetricHtml +
+      '<div class="metric-pill"><span style="color:' + podColor + '">' + podLabel + '</span></div>';
   }
 }
 
