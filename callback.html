@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DIS ARG — Autenticando...</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: #0f0f0f; color: #e8e8e8; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 2rem; }
+.card { background: #1a1a1a; border: 1px solid #2a2a2a; border-radius: 14px; padding: 2rem; text-align: center; width: 100%; max-width: 320px; }
+.logo { width: 40px; height: 40px; background: #1a1a2e; border: 1px solid #2a2a4a; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700; color: #6c8eff; margin: 0 auto 1rem; }
+.spinner { display: inline-block; width: 20px; height: 20px; border: 2px solid #333; border-top-color: #6c8eff; border-radius: 50%; animation: spin 0.7s linear infinite; margin-bottom: 1rem; }
+@keyframes spin { to { transform: rotate(360deg); } }
+p { font-size: 14px; color: #666; }
+.error { color: #e05c5c; font-size: 13px; margin-top: 0.5rem; }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="logo">DA</div>
+  <div class="spinner"></div>
+  <p id="msg">Verificando acceso...</p>
+  <p class="error" id="err"></p>
+</div>
+<script>
+const API_URL = "https://nr8qjpcl4d.execute-api.us-east-1.amazonaws.com/prod/action";
+async function handleCallback() {
+  const params = new URLSearchParams(window.location.search);
+  const code = params.get("code");
+  const state = params.get("state");
+  const savedState = sessionStorage.getItem("oauth_state");
+  if (!code) { document.getElementById("err").textContent = "Sin código de autorización."; return; }
+  if (state !== savedState) { document.getElementById("err").textContent = "Error de seguridad: state inválido."; return; }
+  try {
+    const res = await fetch(API_URL, { method: "POST", headers: {"Content-Type":"application/json"}, body: JSON.stringify({action:"github_exchange", code}) });
+    const data = await res.json();
+    if (!res.ok) { document.getElementById("err").textContent = data.error || "Error de autenticación."; document.getElementById("msg").textContent = "Sin acceso."; return; }
+    localStorage.setItem("ops_github_token", data.github_token);
+    localStorage.setItem("ops_github_user", data.username);
+    sessionStorage.removeItem("oauth_state");
+    document.getElementById("msg").textContent = "¡Acceso confirmado! Redirigiendo...";
+    setTimeout(() => { window.location.href = "/ops-panel/"; }, 800);
+  } catch(e) { document.getElementById("err").textContent = "Error de conexión."; }
+}
+handleCallback();
+</script>
+</body>
+</html>
