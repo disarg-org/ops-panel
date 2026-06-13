@@ -3,399 +3,347 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>DIS ARG - Ops Panel</title>
+<title>DIS ARG Ops</title>
 <style>
-* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: #0a0a0a; color: #e8e8e8; min-height: 100vh; }
-
-/* HEADER */
-.header { padding: 1.5rem 1.25rem 1rem; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid #1a1a1a; }
-.logo { width: 40px; height: 40px; background: #1a1a2e; border: 1px solid #2a2a4a; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 800; color: #6c8eff; flex-shrink: 0; }
-.header-text h1 { font-size: 18px; font-weight: 700; color: #e8e8e8; }
-.header-text p { font-size: 13px; color: #555; margin-top: 2px; }
-.user-badge { margin-left: auto; background: #1a1a2e; border: 1px solid #2a2a4a; border-radius: 20px; padding: 4px 12px; font-size: 13px; color: #6c8eff; font-weight: 600; flex-shrink: 0; }
-
-/* LOGIN */
-#login-section { padding: 2rem 1.25rem; }
-.login-card { background: #1a1a1a; border: 1px solid #2a2a2a; border-radius: 16px; padding: 2rem; }
-.login-title { font-size: 22px; font-weight: 700; margin-bottom: 8px; }
-.login-sub { font-size: 15px; color: #666; margin-bottom: 2rem; }
-.btn-github { width: 100%; padding: 1rem; border-radius: 12px; border: 1px solid #2a2a2a; background: #1a1a1a; color: #e8e8e8; font-size: 16px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 12px; transition: background 0.15s; }
-.btn-github:hover { background: #222; }
-.btn-github:active { transform: scale(0.98); }
-.btn-github svg { width: 24px; height: 24px; fill: #e8e8e8; flex-shrink: 0; }
-
-/* DASHBOARD */
-#dashboard-section { display: none; padding: 1.25rem; }
-.dash-title { font-size: 13px; font-weight: 600; color: #444; letter-spacing: 0.8px; text-transform: uppercase; margin-bottom: 1rem; }
-.client-card { background: #1a1a1a; border: 1px solid #2a2a2a; border-radius: 16px; padding: 1.25rem; margin-bottom: 0.75rem; cursor: pointer; transition: border-color 0.15s, background 0.15s; active: scale(0.98); }
-.client-card:active { transform: scale(0.98); }
-.client-card.green { border-color: #2a3e2a; }
-.client-card.amber { border-color: #3e351a; }
-.client-card.red { border-color: #3e2a2a; }
-.client-card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-.client-name { font-size: 20px; font-weight: 700; color: #e8e8e8; }
-.semaforo { width: 18px; height: 18px; border-radius: 50%; flex-shrink: 0; }
-.semaforo.green { background: #5cb85c; box-shadow: 0 0 8px #5cb85c88; }
-.semaforo.amber { background: #e0a05c; box-shadow: 0 0 8px #e0a05c88; }
-.semaforo.red { background: #e05c5c; box-shadow: 0 0 8px #e05c5c88; }
-.semaforo.gray { background: #444; }
-.client-metrics { display: flex; gap: 8px; flex-wrap: wrap; }
-.metric-pill { background: #111; border: 1px solid #222; border-radius: 8px; padding: 5px 10px; font-size: 13px; color: #888; }
-.metric-pill span { font-weight: 600; }
-.metric-pill.ok span { color: #5cb85c; }
-.metric-pill.warn span { color: #e0a05c; }
-.metric-pill.crit span { color: #e05c5c; }
-.metric-pill.loading span { color: #555; }
-.client-arrow { font-size: 18px; color: #333; margin-left: auto; }
-.refresh-btn { width: 100%; padding: 0.85rem; border-radius: 12px; border: 1px solid #222; background: #111; color: #555; font-size: 15px; font-weight: 600; cursor: pointer; margin-bottom: 1.25rem; }
-.refresh-btn:active { background: #1a1a1a; }
-
-/* DETALLE */
-#detail-section { display: none; padding: 1.25rem; }
-.back-btn { display: flex; align-items: center; gap: 8px; background: none; border: none; color: #6c8eff; font-size: 16px; font-weight: 600; cursor: pointer; padding: 0 0 1.25rem 0; }
-.detail-client-name { font-size: 26px; font-weight: 800; margin-bottom: 1.5rem; }
-.section-label { font-size: 12px; font-weight: 600; color: #444; letter-spacing: 0.8px; text-transform: uppercase; margin: 1.25rem 0 0.5rem; }
-.btn-action { width: 100%; padding: 1rem; border-radius: 12px; border: 1px solid #2a3a2a; background: #1e2a1e; color: #5cb85c; font-size: 16px; font-weight: 700; cursor: pointer; margin-top: 0.5rem; }
-.btn-action:disabled { opacity: 0.4; cursor: not-allowed; }
-.btn-secondary { width: 100%; padding: 1rem; border-radius: 12px; border: 1px solid #2a2a3a; background: #1e1e2a; color: #6c8eff; font-size: 16px; font-weight: 700; cursor: pointer; margin-top: 0.5rem; }
-.btn-secondary:disabled { opacity: 0.4; cursor: not-allowed; }
-.status-row { display: flex; justify-content: space-between; align-items: center; padding: 0.75rem 0; border-bottom: 1px solid #1e1e1e; }
-.status-row:last-child { border-bottom: none; }
-.status-key { font-size: 15px; color: #666; }
-.status-val { font-size: 15px; color: #e8e8e8; font-weight: 600; text-align: right; max-width: 60%; word-break: break-all; }
-.badge { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 14px; font-weight: 700; }
-.badge-green { background: #1a2e1a; color: #5cb85c; border: 1px solid #2a3e2a; }
-.badge-red { background: #2e1a1a; color: #e05c5c; border: 1px solid #3e2a2a; }
-.badge-amber { background: #2e251a; color: #e0a05c; border: 1px solid #3e351a; }
-.badge-gray { background: #1a1a1a; color: #666; border: 1px solid #2a2a2a; }
-.result-box { background: #1a1a1a; border: 1px solid #222; border-radius: 12px; padding: 1rem; margin-top: 0.75rem; }
-.error-msg { background: #2a1a1a; border: 1px solid #3a2a2a; border-radius: 12px; padding: 1rem; font-size: 15px; color: #e05c5c; margin-top: 0.75rem; }
-.spinner { display: inline-block; width: 16px; height: 16px; border: 2px solid #333; border-top-color: #6c8eff; border-radius: 50%; animation: spin 0.7s linear infinite; vertical-align: middle; margin-right: 8px; }
-@keyframes spin { to { transform: rotate(360deg); } }
-.pod-item { background: #111; border: 1px solid #1e1e1e; border-radius: 10px; padding: 0.85rem; margin-bottom: 0.5rem; }
-.pod-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
-.pod-name { font-size: 13px; color: #777; max-width: 65%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.pod-stats { display: flex; gap: 12px; margin-top: 4px; }
-.pod-stat { font-size: 14px; color: #6c8eff; font-weight: 600; }
-.pod-stat span { color: #555; font-weight: 400; font-size: 13px; }
-.log-box { background: #0a0a0a; border: 1px solid #1e1e1e; border-radius: 10px; padding: 0.85rem; margin-top: 0.75rem; font-family: monospace; font-size: 12px; color: #888; white-space: pre-wrap; word-break: break-all; max-height: 280px; overflow-y: auto; line-height: 1.6; }
-.logout-btn { width: 100%; padding: 0.85rem; background: none; border: none; color: #333; font-size: 15px; cursor: pointer; margin-top: 0.5rem; }
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#0a0a0a;color:#e8e8e8;min-height:100vh}
+.hdr{padding:1.25rem;display:flex;align-items:center;gap:12px;border-bottom:1px solid #1a1a1a}
+.logo{width:40px;height:40px;background:#1a1a2e;border:1px solid #2a2a4a;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800;color:#6c8eff;flex-shrink:0}
+.hdr h1{font-size:18px;font-weight:700}
+.hdr p{font-size:12px;color:#555}
+.ubadge{margin-left:auto;background:#1a1a2e;border:1px solid #2a2a4a;border-radius:20px;padding:4px 12px;font-size:13px;color:#6c8eff;font-weight:600;flex-shrink:0;display:none}
+#login-section{padding:2rem 1.25rem}
+.lcrd{background:#1a1a1a;border:1px solid #2a2a2a;border-radius:16px;padding:2rem}
+.lcrd h2{font-size:24px;font-weight:700;margin-bottom:8px}
+.lcrd p{font-size:15px;color:#666;margin-bottom:2rem}
+.btn-gh{width:100%;padding:1rem;border-radius:12px;border:1px solid #333;background:#1a1a1a;color:#e8e8e8;font-size:16px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:12px}
+.btn-gh svg{width:24px;height:24px;fill:#e8e8e8;flex-shrink:0}
+#dash-section{display:none;padding:1.25rem}
+.dash-hdr{font-size:12px;font-weight:600;color:#444;letter-spacing:.8px;text-transform:uppercase;margin-bottom:1rem}
+.ref-btn{width:100%;padding:.85rem;border-radius:12px;border:1px solid #222;background:#111;color:#555;font-size:15px;font-weight:600;cursor:pointer;margin-bottom:1.25rem}
+.ccrd{background:#1a1a1a;border:2px solid #2a2a2a;border-radius:16px;padding:1.25rem;margin-bottom:.75rem;cursor:pointer}
+.ccrd:active{transform:scale(.98)}
+.ccrd.green{border-color:#2a3e2a}
+.ccrd.amber{border-color:#3e351a}
+.ccrd.red{border-color:#3e2a2a}
+.ccrd-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.cname{font-size:22px;font-weight:800;color:#e8e8e8}
+.sem{width:20px;height:20px;border-radius:50%;background:#333;flex-shrink:0}
+.sem.green{background:#5cb85c;box-shadow:0 0 10px #5cb85c88}
+.sem.amber{background:#e0a05c;box-shadow:0 0 10px #e0a05c88}
+.sem.red{background:#e05c5c;box-shadow:0 0 10px #e05c5c88}
+.pills{display:flex;gap:6px;flex-wrap:wrap}
+.pill{background:#111;border:1px solid #222;border-radius:8px;padding:4px 10px;font-size:13px;color:#666;font-weight:600}
+.pill.ok{color:#5cb85c}
+.pill.warn{color:#e0a05c}
+.pill.crit{color:#e05c5c}
+#detail-section{display:none;padding:1.25rem}
+.back{display:flex;align-items:center;gap:8px;background:none;border:none;color:#6c8eff;font-size:16px;font-weight:600;cursor:pointer;padding:0 0 1.25rem 0}
+.dname{font-size:28px;font-weight:800;margin-bottom:1.5rem}
+.slbl{font-size:12px;font-weight:600;color:#444;letter-spacing:.8px;text-transform:uppercase;margin:1.25rem 0 .5rem}
+.bact{width:100%;padding:1rem;border-radius:12px;border:1px solid #2a3a2a;background:#1e2a1e;color:#5cb85c;font-size:16px;font-weight:700;cursor:pointer;margin-top:.5rem}
+.bact:disabled{opacity:.4;cursor:not-allowed}
+.bsec{width:100%;padding:1rem;border-radius:12px;border:1px solid #2a2a3a;background:#1e1e2a;color:#6c8eff;font-size:16px;font-weight:700;cursor:pointer;margin-top:.5rem}
+.bsec:disabled{opacity:.4;cursor:not-allowed}
+.srow{display:flex;justify-content:space-between;align-items:center;padding:.75rem 0;border-bottom:1px solid #1e1e1e}
+.srow:last-child{border-bottom:none}
+.sk{font-size:15px;color:#666}
+.sv{font-size:15px;color:#e8e8e8;font-weight:600;text-align:right;max-width:60%;word-break:break-all}
+.bdg{display:inline-block;padding:4px 12px;border-radius:20px;font-size:14px;font-weight:700}
+.bg{background:#1a2e1a;color:#5cb85c;border:1px solid #2a3e2a}
+.br{background:#2e1a1a;color:#e05c5c;border:1px solid #3e2a2a}
+.ba{background:#2e251a;color:#e0a05c;border:1px solid #3e351a}
+.rbox{background:#1a1a1a;border:1px solid #222;border-radius:12px;padding:1rem;margin-top:.75rem}
+.err{background:#2a1a1a;border:1px solid #3a2a2a;border-radius:12px;padding:1rem;font-size:15px;color:#e05c5c;margin-top:.75rem}
+.spin{display:inline-block;width:16px;height:16px;border:2px solid #333;border-top-color:#6c8eff;border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:8px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.pitm{background:#111;border:1px solid #1e1e1e;border-radius:10px;padding:.85rem;margin-bottom:.5rem}
+.ptop{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.pnm{font-size:12px;color:#777;max-width:65%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pst{display:flex;gap:12px;margin-top:4px}
+.psv{font-size:14px;color:#6c8eff;font-weight:600}
+.psv span{color:#555;font-weight:400;font-size:13px}
+.logbox{background:#0a0a0a;border:1px solid #1e1e1e;border-radius:10px;padding:.85rem;margin-top:.75rem;font-family:monospace;font-size:12px;color:#888;white-space:pre-wrap;word-break:break-all;max-height:280px;overflow-y:auto;line-height:1.6}
+.logout{width:100%;padding:.85rem;background:none;border:none;color:#333;font-size:15px;cursor:pointer;margin-top:.5rem}
 </style>
 </head>
 <body>
-
-<div class="header">
+<div class="hdr">
   <div class="logo">DA</div>
-  <div class="header-text">
-    <h1>DIS ARG Ops</h1>
-    <p>Infrastructure control</p>
-  </div>
-  <div class="user-badge" id="user-badge" style="display:none"></div>
+  <div><h1>DIS ARG Ops</h1><p>Infrastructure control</p></div>
+  <div class="ubadge" id="ubadge"></div>
 </div>
 
-<!-- LOGIN -->
 <div id="login-section">
-  <div class="login-card">
-    <div class="login-title">Bienvenido</div>
-    <div class="login-sub">Ingresa con tu cuenta de GitHub para continuar.</div>
-    <button class="btn-github" onclick="loginWithGitHub()">
+  <div class="lcrd">
+    <h2>Bienvenido</h2>
+    <p>Ingresa con tu cuenta de GitHub para continuar.</p>
+    <button class="btn-gh" id="btn-login">
       <svg viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
       Iniciar sesion con GitHub
     </button>
   </div>
 </div>
 
-<!-- DASHBOARD -->
-<div id="dashboard-section">
-  <div class="dash-title">Estado general</div>
-  <button class="refresh-btn" onclick="loadDashboard()">↻ Actualizar todo</button>
-  <div id="clients-grid"></div>
-  <button class="logout-btn" onclick="logout()">Cerrar sesion</button>
+<div id="dash-section">
+  <div class="dash-hdr">Estado general</div>
+  <button class="ref-btn" id="btn-refresh">Actualizar todo</button>
+  <div id="cgrid"></div>
+  <button class="logout" id="btn-logout-dash">Cerrar sesion</button>
 </div>
 
-<!-- DETALLE -->
 <div id="detail-section">
-  <button class="back-btn" onclick="showDashboard()">← Volver</button>
-  <div class="detail-client-name" id="detail-client-name"></div>
-
-  <div class="section-label">Base de datos</div>
-  <button class="btn-action" id="btn-rds">Consultar RDS</button>
+  <button class="back" id="btn-back">&#8592; Volver</button>
+  <div class="dname" id="dname"></div>
+  <div class="slbl">Base de datos</div>
+  <button class="bact" id="btn-rds" data-label="Consultar RDS">Consultar RDS</button>
   <div id="rds-result"></div>
-
-  <div class="section-label">Sitio web</div>
-  <button class="btn-secondary" id="btn-health">Health check</button>
+  <div class="slbl">Sitio web</div>
+  <button class="bsec" id="btn-health" data-label="Health check">Health check</button>
   <div id="health-result"></div>
-
-  <div class="section-label">Pods</div>
-  <button class="btn-secondary" id="btn-pods">Ver pods</button>
+  <div class="slbl">Pods</div>
+  <button class="bsec" id="btn-pods" data-label="Ver pods">Ver pods</button>
   <div id="pods-result"></div>
-
-  <div class="section-label">Logs de Odoo</div>
-  <button class="btn-secondary" id="btn-logs">Ver ultimas 50 lineas</button>
+  <div class="slbl">Logs de Odoo</div>
+  <button class="bsec" id="btn-logs" data-label="Ver ultimas 50 lineas">Ver ultimas 50 lineas</button>
   <div id="logs-result"></div>
-
-  <button class="logout-btn" onclick="logout()">Cerrar sesion</button>
+  <button class="logout" id="btn-logout-detail">Cerrar sesion</button>
 </div>
 
 <script>
-const API_URL="https://nr8qjpcl4d.execute-api.us-east-1.amazonaws.com/prod/action";
-const GITHUB_CLIENT_ID="Ov23li09kKMNZA4am0BO";
-const REDIRECT_URI="https://disarg-org.github.io/ops-panel/callback.html";
-const CLIENTS=["cascadas","basso","dls","valimartsrl","sursports","domstor"];
-let githubToken=localStorage.getItem("ops_github_token");
-let currentClient=null;
+var API = "https://nr8qjpcl4d.execute-api.us-east-1.amazonaws.com/prod/action";
+var GH_CLIENT = "Ov23li09kKMNZA4am0BO";
+var REDIRECT = "https://disarg-org.github.io/ops-panel/callback.html";
+var CLIENTS = ["cascadas","basso","dls","valimartsrl","sursports","domstor"];
+var token = localStorage.getItem("ops_github_token");
+var curClient = null;
 
-window.addEventListener("load",()=>{ if(githubToken){ showDashboard(); loadDashboard(); } });
+window.onload = function() {
+  if (token) { showDash(); loadDash(); }
+};
 
-function loginWithGitHub(){
-  const s=Math.random().toString(36).substring(2);
-  sessionStorage.setItem("oauth_state",s);
-  window.location.href=`https://github.com/login/oauth/authorize?client_id=${GITHUB_CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&scope=read:user&state=${s}`;
-}
+document.getElementById("btn-login").onclick = function() {
+  var s = Math.random().toString(36).substring(2);
+  sessionStorage.setItem("oauth_state", s);
+  window.location.href = "https://github.com/login/oauth/authorize?client_id=" + GH_CLIENT + "&redirect_uri=" + encodeURIComponent(REDIRECT) + "&scope=read:user&state=" + s;
+};
 
-function logout(){
+document.getElementById("btn-refresh").onclick = loadDash;
+document.getElementById("btn-back").onclick = showDash;
+document.getElementById("btn-logout-dash").onclick = logout;
+document.getElementById("btn-logout-detail").onclick = logout;
+document.getElementById("btn-rds").onclick = getRds;
+document.getElementById("btn-health").onclick = getHealth;
+document.getElementById("btn-pods").onclick = getPods;
+document.getElementById("btn-logs").onclick = getLogs;
+
+function logout() {
   localStorage.removeItem("ops_github_token");
   localStorage.removeItem("ops_github_user");
-  githubToken=null;
-  document.getElementById("login-section").style.display="block";
-  document.getElementById("dashboard-section").style.display="none";
-  document.getElementById("detail-section").style.display="none";
-  document.getElementById("user-badge").style.display="none";
+  token = null;
+  show("login-section");
 }
 
-function showDashboard(){
-  document.getElementById("login-section").style.display="none";
-  document.getElementById("dashboard-section").style.display="block";
-  document.getElementById("detail-section").style.display="none";
-  const u=localStorage.getItem("ops_github_user")||"";
-  const badge=document.getElementById("user-badge");
-  badge.textContent=u; badge.style.display="block";
-}
-
-function showDetail(client){
-  currentClient=client;
-  document.getElementById("dashboard-section").style.display="none";
-  document.getElementById("detail-section").style.display="block";
-  document.getElementById("detail-client-name").textContent=client;
-  ["rds-result","health-result","pods-result","logs-result"].forEach(id=>document.getElementById(id).innerHTML="");
-  ["btn-rds","btn-health","btn-pods","btn-logs"].forEach(id=>{
-    const b=document.getElementById(id);
-    b.disabled=false;
-    b.innerHTML=b.getAttribute("data-label");
+function show(id) {
+  ["login-section","dash-section","detail-section"].forEach(function(s) {
+    document.getElementById(s).style.display = s === id ? "block" : "none";
   });
 }
 
-async function callApi(action,client,extra={}){
-  const res=await fetch(API_URL,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({github_token:githubToken,action,client,...extra})});
-  const data=await res.json();
-  if(res.status===401||res.status===403){logout();throw new Error(data.error||"Sin acceso");}
-  if(!res.ok)throw new Error(data.error||"Error desconocido");
-  return data;
+function showDash() {
+  show("dash-section");
+  var u = localStorage.getItem("ops_github_user") || "";
+  var b = document.getElementById("ubadge");
+  b.textContent = u; b.style.display = "block";
 }
+
+function showDetail(client) {
+  curClient = client;
+  document.getElementById("dname").textContent = client;
+  ["rds-result","health-result","pods-result","logs-result"].forEach(function(id) {
+    document.getElementById(id).innerHTML = "";
+  });
+  ["btn-rds","btn-health","btn-pods","btn-logs"].forEach(function(id) {
+    var b = document.getElementById(id);
+    b.disabled = false;
+    b.innerHTML = b.getAttribute("data-label");
+  });
+  show("detail-section");
+}
+
+function api(action, client, extra) {
+  var body = Object.assign({github_token: token, action: action, client: client}, extra || {});
+  return fetch(API, {method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify(body)})
+    .then(function(r) {
+      return r.json().then(function(d) {
+        if (r.status === 401 || r.status === 403) { logout(); throw new Error(d.error || "Sin acceso"); }
+        if (!r.ok) throw new Error(d.error || "Error");
+        return d;
+      });
+    });
+}
+
+function badge(s) {
+  if (s === "available" || s === "Running") return '<span class="bdg bg">' + s + '</span>';
+  if (s === "stopped" || s === "Failed") return '<span class="bdg br">' + s + '</span>';
+  if (s === "starting" || s === "Pending" || s === "CrashLoopBackOff") return '<span class="bdg ba">' + s + '</span>';
+  return '<span class="bdg">' + s + '</span>';
+}
+
+function ldg(btnId, lbl) { var b=document.getElementById(btnId); b.disabled=true; b.innerHTML='<span class="spin"></span>'+lbl; }
+function dne(btnId) { var b=document.getElementById(btnId); b.disabled=false; b.innerHTML=b.getAttribute("data-label"); }
 
 // DASHBOARD
-async function loadDashboard(){
-  const grid=document.getElementById("clients-grid");
-  grid.innerHTML=CLIENTS.map(c=>`
-    <div class="client-card" id="card-${c}" onclick="showDetail('${c}')">
-      <div class="client-card-header">
-        <span class="client-name">${c}</span>
-        <div class="semaforo gray" id="sem-${c}"></div>
-      </div>
-      <div class="client-metrics" id="metrics-${c}">
-        <div class="metric-pill loading"><span>Cargando...</span></div>
-      </div>
-    </div>`).join("");
-
-  CLIENTS.filter(c=>c!=="domstor").forEach(c=>loadClientStatus(c));
-  // domstor solo health check
-  loadClientHealth("domstor");
+function loadDash() {
+  var grid = document.getElementById("cgrid");
+  grid.innerHTML = CLIENTS.map(function(c) {
+    return '<div class="ccrd" id="card-'+c+'" onclick="showDetail(''+c+'')">' +
+      '<div class="ccrd-top"><span class="cname">'+c+'</span><div class="sem" id="sem-'+c+'"></div></div>' +
+      '<div class="pills" id="pills-'+c+'"><span class="pill">Cargando...</span></div>' +
+      '</div>';
+  }).join("");
+  CLIENTS.forEach(function(c) {
+    if (c === "domstor") { loadHealth(c); } else { loadStatus(c); }
+  });
 }
 
-async function loadClientStatus(client){
-  try{
-    const [rds, pods, metrics] = await Promise.all([
-      callApi("rds_status", client),
-      callApi("pod_status", client),
-      callApi("pod_metrics", client).catch(()=>({metrics:[]}))
-    ]);
-
-    const metricsMap={};
-    (metrics.metrics||[]).forEach(m=>metricsMap[m.name]=m);
-
-    // RDS semaforo
-    let rdsOk = rds.status==="available";
-    let rdsCpu = rds.cpu_pct;
-    let rdsMem = rds.mem_pct;
-    let rdsWarn = rdsCpu>15 || rdsMem>85;
-    let rdsCrit = rdsCpu>30 || rdsMem>95 || !rdsOk;
-
-    // Pods semaforo
-    const mainPod = pods.pods.find(p=>p.name.includes("main-odoo"));
-    let podOk = mainPod && mainPod.phase==="Running" && mainPod.ready;
-    let podCrit = !podOk;
-
-    // Color general
-    let color = "green";
-    if(rdsCrit || podCrit) color="red";
-    else if(rdsWarn) color="amber";
-
-    const card=document.getElementById("card-"+client);
-    const sem=document.getElementById("sem-"+client);
-    card.className="client-card "+color;
-    sem.className="semaforo "+color;
-
-    const mainMetric = mainPod ? metricsMap[mainPod.name] : null;
-    const cpuClass = rdsCpu>30?"crit":rdsCpu>15?"warn":"ok";
-    const memClass = rdsMem>95?"crit":rdsMem>85?"warn":"ok";
-
-    const podColor = podOk ? "#5cb85c" : "#e05c5c";
-    const podLabel = podOk ? "UP" : "DOWN";
-    const rdsClass = rdsOk ? "ok" : "crit";
-    const podMetricHtml = mainMetric ? '<div class="metric-pill ok">Pod <span>' + mainMetric.cpu_m + 'm / ' + mainMetric.mem_mi + 'Mi</span></div>' : "";
-    document.getElementById("metrics-"+client).innerHTML =
-      '<div class="metric-pill ' + rdsClass + '"><span>' + rds.status + '</span></div>' +
-      '<div class="metric-pill ' + cpuClass + '">CPU <span>' + (rdsCpu!==null?rdsCpu+"%":"--") + '</span></div>' +
-      '<div class="metric-pill ' + memClass + '">RAM <span>' + (rdsMem!==null?rdsMem+"%":"--") + '</span></div>' +
-      podMetricHtml +
-      '<div class="metric-pill"><span style="color:' + podColor + '">' + podLabel + '</span></div>';
-  }catch(e){
-    document.getElementById("sem-"+client).className="semaforo red";
-    document.getElementById("card-"+client).className="client-card red";
-    const podColor = podOk ? "#5cb85c" : "#e05c5c";
-    const podLabel = podOk ? "UP" : "DOWN";
-    const rdsClass = rdsOk ? "ok" : "crit";
-    const podMetricHtml = mainMetric ? '<div class="metric-pill ok">Pod <span>' + mainMetric.cpu_m + 'm / ' + mainMetric.mem_mi + 'Mi</span></div>' : "";
-    document.getElementById("metrics-"+client).innerHTML =
-      '<div class="metric-pill ' + rdsClass + '"><span>' + rds.status + '</span></div>' +
-      '<div class="metric-pill ' + cpuClass + '">CPU <span>' + (rdsCpu!==null?rdsCpu+"%":"--") + '</span></div>' +
-      '<div class="metric-pill ' + memClass + '">RAM <span>' + (rdsMem!==null?rdsMem+"%":"--") + '</span></div>' +
-      podMetricHtml +
-      '<div class="metric-pill"><span style="color:' + podColor + '">' + podLabel + '</span></div>';
-  }
+function setSem(client, color) {
+  document.getElementById("sem-"+client).className = "sem " + color;
+  document.getElementById("card-"+client).className = "ccrd " + color;
 }
 
-async function loadClientHealth(client){
-  try{
-    const d=await callApi("health_check",client);
-    const ok=d.ok;
-    const sem=document.getElementById("sem-"+client);
-    const card=document.getElementById("card-"+client);
-    sem.className="semaforo "+(ok?"green":"red");
-    card.className="client-card "+(ok?"green":"red");
-    const podColor = podOk ? "#5cb85c" : "#e05c5c";
-    const podLabel = podOk ? "UP" : "DOWN";
-    const rdsClass = rdsOk ? "ok" : "crit";
-    const podMetricHtml = mainMetric ? '<div class="metric-pill ok">Pod <span>' + mainMetric.cpu_m + 'm / ' + mainMetric.mem_mi + 'Mi</span></div>' : "";
-    document.getElementById("metrics-"+client).innerHTML =
-      '<div class="metric-pill ' + rdsClass + '"><span>' + rds.status + '</span></div>' +
-      '<div class="metric-pill ' + cpuClass + '">CPU <span>' + (rdsCpu!==null?rdsCpu+"%":"--") + '</span></div>' +
-      '<div class="metric-pill ' + memClass + '">RAM <span>' + (rdsMem!==null?rdsMem+"%":"--") + '</span></div>' +
-      podMetricHtml +
-      '<div class="metric-pill"><span style="color:' + podColor + '">' + podLabel + '</span></div>';
-  }catch(e){
-    document.getElementById("sem-"+client).className="semaforo red";
-    const podColor = podOk ? "#5cb85c" : "#e05c5c";
-    const podLabel = podOk ? "UP" : "DOWN";
-    const rdsClass = rdsOk ? "ok" : "crit";
-    const podMetricHtml = mainMetric ? '<div class="metric-pill ok">Pod <span>' + mainMetric.cpu_m + 'm / ' + mainMetric.mem_mi + 'Mi</span></div>' : "";
-    document.getElementById("metrics-"+client).innerHTML =
-      '<div class="metric-pill ' + rdsClass + '"><span>' + rds.status + '</span></div>' +
-      '<div class="metric-pill ' + cpuClass + '">CPU <span>' + (rdsCpu!==null?rdsCpu+"%":"--") + '</span></div>' +
-      '<div class="metric-pill ' + memClass + '">RAM <span>' + (rdsMem!==null?rdsMem+"%":"--") + '</span></div>' +
-      podMetricHtml +
-      '<div class="metric-pill"><span style="color:' + podColor + '">' + podLabel + '</span></div>';
-  }
+function setPills(client, html) {
+  document.getElementById("pills-"+client).innerHTML = html;
+}
+
+function loadStatus(client) {
+  Promise.all([
+    api("rds_status", client),
+    api("pod_status", client),
+    api("pod_metrics", client).catch(function() { return {metrics:[]}; })
+  ]).then(function(results) {
+    var rds = results[0];
+    var pods = results[1];
+    var met = results[2];
+
+    var mmap = {};
+    (met.metrics || []).forEach(function(m) { mmap[m.name] = m; });
+
+    var rdsOk = rds.status === "available";
+    var cpu = rds.cpu_pct;
+    var mem = rds.mem_pct;
+    var warnFlag = cpu > 15 || mem > 85;
+    var critFlag = cpu > 30 || mem > 95 || !rdsOk;
+
+    var mainPod = null;
+    (pods.pods || []).forEach(function(p) { if (p.name.indexOf("main-odoo") >= 0) mainPod = p; });
+    var podUp = mainPod && mainPod.phase === "Running" && mainPod.ready;
+
+    var color = "green";
+    if (critFlag || !podUp) color = "red";
+    else if (warnFlag) color = "amber";
+
+    setSem(client, color);
+
+    var cpuCls = cpu > 30 ? "crit" : cpu > 15 ? "warn" : "ok";
+    var memCls = mem > 95 ? "crit" : mem > 85 ? "warn" : "ok";
+    var rdsCls = rdsOk ? "ok" : "crit";
+    var podCls = podUp ? "ok" : "crit";
+    var podTxt = podUp ? "UP" : "DOWN";
+    var mainM = mainPod ? mmap[mainPod.name] : null;
+    var metHtml = mainM ? '<span class="pill ok">'+mainM.cpu_m+'m/'+mainM.mem_mi+'Mi</span>' : "";
+
+    setPills(client,
+      '<span class="pill '+rdsCls+'">'+rds.status+'</span>' +
+      '<span class="pill '+cpuCls+'">CPU '+(cpu!==null?cpu+"%":"--")+'</span>' +
+      '<span class="pill '+memCls+'">RAM '+(mem!==null?mem+"%":"--")+'</span>' +
+      metHtml +
+      '<span class="pill '+podCls+'">Pods '+podTxt+'</span>'
+    );
+  }).catch(function(e) {
+    setSem(client, "red");
+    setPills(client, '<span class="pill crit">'+e.message+'</span>');
+  });
+}
+
+function loadHealth(client) {
+  api("health_check", client).then(function(d) {
+    var ok = d.ok;
+    setSem(client, ok ? "green" : "red");
+    setPills(client,
+      '<span class="pill '+(ok?"ok":"crit")+'">'+(ok?"200 OK":d.status||"Error")+'</span>' +
+      '<span class="pill ok">'+(d.response_ms?d.response_ms+"ms":"--")+'</span>'
+    );
+  }).catch(function(e) {
+    setSem(client, "red");
+    setPills(client, '<span class="pill crit">Error</span>');
+  });
 }
 
 // DETALLE
-function statusBadge(s){
-  if(["available","Running"].includes(s))return `<span class="badge badge-green">${s}</span>`;
-  if(["stopped","Failed"].includes(s))return `<span class="badge badge-red">${s}</span>`;
-  if(["starting","stopping","Pending","CrashLoopBackOff"].includes(s))return `<span class="badge badge-amber">${s}</span>`;
-  return `<span class="badge badge-gray">${s}</span>`;
-}
-function loading(btnId,label){const b=document.getElementById(btnId);b.disabled=true;b.innerHTML=`<span class="spinner"></span>${label}`;}
-function done(btnId){const b=document.getElementById(btnId);b.disabled=false;b.innerHTML=b.getAttribute("data-label");}
-
-async function getRdsStatus(){
-  loading("btn-rds","Consultando...");
-  const r=document.getElementById("rds-result");r.innerHTML="";
-  try{
-    const d=await callApi("rds_status",currentClient);
-    r.innerHTML=`<div class="result-box">
-      <div class="status-row"><span class="status-key">Estado</span><span class="status-val">${statusBadge(d.status)}</span></div>
-      <div class="status-row"><span class="status-key">CPU</span><span class="status-val">${d.cpu_pct!==null?d.cpu_pct+"%":"--"}</span></div>
-      <div class="status-row"><span class="status-key">Memoria</span><span class="status-val">${d.mem_pct!==null?d.mem_pct+"%":"--"}</span></div>
-      <div class="status-row"><span class="status-key">Conexiones</span><span class="status-val">${d.connections!==null?d.connections:"--"}</span></div>
-      <div class="status-row"><span class="status-key">Instancia</span><span class="status-val">${d.class}</span></div>
-      <div class="status-row"><span class="status-key">Motor</span><span class="status-val">${d.engine}</span></div>
-      <div class="status-row"><span class="status-key">Storage</span><span class="status-val">${d.storage_gb} GB</span></div>
-    </div>`;
-  }catch(e){r.innerHTML=`<div class="error-msg">${e.message}</div>`;}
-  finally{done("btn-rds");}
+function getRds() {
+  ldg("btn-rds","Consultando...");
+  var r = document.getElementById("rds-result"); r.innerHTML = "";
+  api("rds_status", curClient).then(function(d) {
+    r.innerHTML = '<div class="rbox">' +
+      '<div class="srow"><span class="sk">Estado</span><span class="sv">'+badge(d.status)+'</span></div>' +
+      '<div class="srow"><span class="sk">CPU</span><span class="sv">'+(d.cpu_pct!==null?d.cpu_pct+"%":"--")+'</span></div>' +
+      '<div class="srow"><span class="sk">Memoria</span><span class="sv">'+(d.mem_pct!==null?d.mem_pct+"%":"--")+'</span></div>' +
+      '<div class="srow"><span class="sk">Conexiones</span><span class="sv">'+(d.connections!==null?d.connections:"--")+'</span></div>' +
+      '<div class="srow"><span class="sk">Instancia</span><span class="sv">'+d.class+'</span></div>' +
+      '<div class="srow"><span class="sk">Motor</span><span class="sv">'+d.engine+'</span></div>' +
+      '<div class="srow"><span class="sk">Storage</span><span class="sv">'+d.storage_gb+' GB</span></div>' +
+      '</div>';
+  }).catch(function(e) { r.innerHTML = '<div class="err">'+e.message+'</div>'; })
+  .finally(function() { dne("btn-rds"); });
 }
 
-async function getHealthCheck(){
-  loading("btn-health","Verificando...");
-  const r=document.getElementById("health-result");r.innerHTML="";
-  try{
-    const d=await callApi("health_check",currentClient);
-    const badge=d.ok?`<span class="badge badge-green">200 OK</span>`:`<span class="badge badge-red">${d.status||"Error"}</span>`;
-    r.innerHTML=`<div class="result-box">
-      <div class="status-row"><span class="status-key">Estado</span><span class="status-val">${badge}</span></div>
-      <div class="status-row"><span class="status-key">Tiempo</span><span class="status-val">${d.response_ms?d.response_ms+"ms":"--"}</span></div>
-    </div>`;
-  }catch(e){r.innerHTML=`<div class="error-msg">${e.message}</div>`;}
-  finally{done("btn-health");}
+function getHealth() {
+  ldg("btn-health","Verificando...");
+  var r = document.getElementById("health-result"); r.innerHTML = "";
+  api("health_check", curClient).then(function(d) {
+    var b = d.ok ? '<span class="bdg bg">200 OK</span>' : '<span class="bdg br">'+(d.status||"Error")+'</span>';
+    r.innerHTML = '<div class="rbox">' +
+      '<div class="srow"><span class="sk">Estado</span><span class="sv">'+b+'</span></div>' +
+      '<div class="srow"><span class="sk">Tiempo</span><span class="sv">'+(d.response_ms?d.response_ms+"ms":"--")+'</span></div>' +
+      '</div>';
+  }).catch(function(e) { r.innerHTML = '<div class="err">'+e.message+'</div>'; })
+  .finally(function() { dne("btn-health"); });
 }
 
-async function getPodStatus(){
-  loading("btn-pods","Consultando...");
-  const r=document.getElementById("pods-result");r.innerHTML="";
-  try{
-    const [pods,metrics]=await Promise.all([
-      callApi("pod_status",currentClient),
-      callApi("pod_metrics",currentClient).catch(()=>({metrics:[]}))
-    ]);
-    const mm={};(metrics.metrics||[]).forEach(m=>mm[m.name]=m);
-    if(!pods.pods||pods.pods.length===0){r.innerHTML=`<div class="error-msg">Sin pods</div>`;return;}
-    r.innerHTML=`<div style="margin-top:0.5rem;">`+pods.pods.map(p=>{
-      const m=mm[p.name];
-      return`<div class="pod-item">
-        <div class="pod-header"><span class="pod-name">${p.name}</span>${statusBadge(p.phase)}</div>
-        <div class="pod-stats">
-          <span class="pod-stat"><span>CPU </span>${m?m.cpu_m+"m":"--"}</span>
-          <span class="pod-stat"><span>RAM </span>${m?m.mem_mi+"Mi":"--"}</span>
-          <span class="pod-stat"><span>Reinic. </span>${p.restarts}</span>
-        </div>
-      </div>`;
-    }).join("")+`</div>`;
-  }catch(e){r.innerHTML=`<div class="error-msg">${e.message}</div>`;}
-  finally{done("btn-pods");}
+function getPods() {
+  ldg("btn-pods","Consultando...");
+  var r = document.getElementById("pods-result"); r.innerHTML = "";
+  Promise.all([
+    api("pod_status", curClient),
+    api("pod_metrics", curClient).catch(function() { return {metrics:[]}; })
+  ]).then(function(res) {
+    var pods = res[0]; var met = res[1];
+    var mm = {}; (met.metrics||[]).forEach(function(m) { mm[m.name]=m; });
+    if (!pods.pods || pods.pods.length === 0) { r.innerHTML = '<div class="err">Sin pods</div>'; return; }
+    r.innerHTML = '<div style="margin-top:.5rem">' + pods.pods.map(function(p) {
+      var m = mm[p.name];
+      return '<div class="pitm">' +
+        '<div class="ptop"><span class="pnm">'+p.name+'</span>'+badge(p.phase)+'</div>' +
+        '<div class="pst">' +
+        '<span class="psv"><span>CPU </span>'+(m?m.cpu_m+"m":"--")+'</span>' +
+        '<span class="psv"><span>RAM </span>'+(m?m.mem_mi+"Mi":"--")+'</span>' +
+        '<span class="psv"><span>Reinic. </span>'+p.restarts+'</span>' +
+        '</div></div>';
+    }).join("") + '</div>';
+  }).catch(function(e) { r.innerHTML = '<div class="err">'+e.message+'</div>'; })
+  .finally(function() { dne("btn-pods"); });
 }
 
-async function getPodLogs(){
-  loading("btn-logs","Cargando...");
-  const r=document.getElementById("logs-result");r.innerHTML="";
-  try{
-    const d=await callApi("pod_logs",currentClient);
-    r.innerHTML=`<div style="margin-top:0.5rem;font-size:12px;color:#444;margin-bottom:4px;">${d.pod}</div><div class="log-box">${d.logs.replace(/</g,"&lt;").replace(/>/g,"&gt;")}</div>`;
-  }catch(e){r.innerHTML=`<div class="error-msg">${e.message}</div>`;}
-  finally{done("btn-logs");}
+function getLogs() {
+  ldg("btn-logs","Cargando...");
+  var r = document.getElementById("logs-result"); r.innerHTML = "";
+  api("pod_logs", curClient).then(function(d) {
+    r.innerHTML = '<div style="margin-top:.5rem;font-size:11px;color:#444;margin-bottom:4px">'+d.pod+'</div>' +
+      '<div class="logbox">'+d.logs.replace(/</g,"&lt;").replace(/>/g,"&gt;")+'</div>';
+  }).catch(function(e) { r.innerHTML = '<div class="err">'+e.message+'</div>'; })
+  .finally(function() { dne("btn-logs"); });
 }
-
-document.addEventListener("DOMContentLoaded",()=>{
-  document.getElementById("btn-rds").setAttribute("data-label","Consultar RDS");
-  document.getElementById("btn-health").setAttribute("data-label","Health check");
-  document.getElementById("btn-pods").setAttribute("data-label","Ver pods");
-  document.getElementById("btn-logs").setAttribute("data-label","Ver ultimas 50 lineas");
-  document.getElementById("btn-rds").onclick=getRdsStatus;
-  document.getElementById("btn-health").onclick=getHealthCheck;
-  document.getElementById("btn-pods").onclick=getPodStatus;
-  document.getElementById("btn-logs").onclick=getPodLogs;
-});
 </script>
 </body>
 </html>
