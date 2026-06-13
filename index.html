@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DIS ARG — Ops Panel</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: #0f0f0f; color: #e8e8e8; min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 2rem 1rem; }
+.header { width: 100%; max-width: 420px; margin-bottom: 2rem; display: flex; align-items: center; gap: 10px; }
+.logo { width: 32px; height: 32px; background: #1a1a2e; border: 1px solid #2a2a4a; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; color: #6c8eff; letter-spacing: -0.5px; }
+.header-text h1 { font-size: 15px; font-weight: 600; color: #e8e8e8; }
+.header-text p { font-size: 12px; color: #666; }
+.card { width: 100%; max-width: 420px; background: #1a1a1a; border: 1px solid #2a2a2a; border-radius: 14px; padding: 1.5rem; margin-bottom: 1rem; }
+.card-label { font-size: 11px; font-weight: 600; color: #555; letter-spacing: 0.8px; text-transform: uppercase; margin-bottom: 1rem; }
+.btn-github { width: 100%; padding: 0.85rem; border-radius: 8px; border: 1px solid #2a2a2a; background: #1a1a1a; color: #e8e8e8; font-size: 14px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; transition: background 0.15s; }
+.btn-github:hover { background: #222; }
+.btn-github:active { transform: scale(0.98); }
+.btn-github svg { width: 20px; height: 20px; fill: #e8e8e8; flex-shrink: 0; }
+.btn-action { width: 100%; padding: 0.75rem; border-radius: 8px; border: 1px solid #2a3a2a; background: #1e2a1e; color: #5cb85c; font-size: 14px; font-weight: 600; cursor: pointer; transition: background 0.15s; margin-top: 0.5rem; }
+.btn-action:hover:not(:disabled) { background: #243024; }
+.btn-action:disabled { opacity: 0.4; cursor: not-allowed; }
+.btn-action:active:not(:disabled) { transform: scale(0.98); }
+.status-row { display: flex; justify-content: space-between; align-items: center; padding: 0.6rem 0; border-bottom: 1px solid #222; }
+.status-row:last-child { border-bottom: none; }
+.status-key { font-size: 13px; color: #666; }
+.status-val { font-size: 13px; color: #e8e8e8; font-weight: 500; text-align: right; max-width: 60%; word-break: break-all; }
+.badge { display: inline-block; padding: 2px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+.badge-green { background: #1a2e1a; color: #5cb85c; border: 1px solid #2a3e2a; }
+.badge-red { background: #2e1a1a; color: #e05c5c; border: 1px solid #3e2a2a; }
+.badge-amber { background: #2e251a; color: #e0a05c; border: 1px solid #3e351a; }
+.badge-gray { background: #222; color: #888; border: 1px solid #333; }
+.user-chip { display: flex; align-items: center; gap: 8px; background: #1a1a2e; border: 1px solid #2a2a4a; border-radius: 8px; padding: 0.5rem 0.75rem; margin-bottom: 1rem; }
+.user-chip span { font-size: 12px; color: #6c8eff; font-weight: 500; }
+.error-msg { background: #2a1a1a; border: 1px solid #3a2a2a; border-radius: 8px; padding: 0.75rem 1rem; font-size: 13px; color: #e05c5c; margin-top: 0.75rem; }
+.spinner { display: inline-block; width: 14px; height: 14px; border: 2px solid #333; border-top-color: #6c8eff; border-radius: 50%; animation: spin 0.7s linear infinite; vertical-align: middle; margin-right: 6px; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.client-tag { display: inline-block; background: #1a1a2e; border: 1px solid #2a2a4a; color: #6c8eff; font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 4px; margin-bottom: 1rem; }
+.section-title { font-size: 12px; font-weight: 600; color: #444; letter-spacing: 0.6px; text-transform: uppercase; margin: 1.25rem 0 0.75rem; }
+#login-section { display: block; }
+#panel-section { display: none; }
+</style>
+</head>
+<body>
+<div class="header">
+  <div class="logo">DA</div>
+  <div class="header-text">
+    <h1>DIS ARG — Ops Panel</h1>
+    <p>Infrastructure control</p>
+  </div>
+</div>
+<div id="login-section" class="card">
+  <div class="card-label">Acceso</div>
+  <button class="btn-github" onclick="loginWithGitHub()">
+    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+    Iniciar sesión con GitHub
+  </button>
+  <div id="login-error"></div>
+</div>
+<div id="panel-section">
+  <div class="card">
+    <div class="user-chip"><span id="username-display"></span></div>
+    <div class="card-label">Cliente</div>
+    <div class="client-tag">cascadas</div>
+    <div class="section-title">Base de datos</div>
+    <button class="btn-action" onclick="getRdsStatus()" id="btn-rds">Consultar estado de RDS</button>
+    <div id="rds-result"></div>
+  </div>
+  <div style="text-align:center; margin-top:1rem;">
+    <button onclick="logout()" style="background:none;border:none;color:#444;font-size:12px;cursor:pointer;padding:0.5rem 1rem;">Cerrar sesión</button>
+  </div>
+</div>
+<script>
+const API_URL = "https://nr8qjpcl4d.execute-api.us-east-1.amazonaws.com/prod/action";
+const GITHUB_CLIENT_ID = "Ov23li09kKMNZA4am0BO";
+const REDIRECT_URI = "https://disarg-org.github.io/ops-panel/callback.html";
+let githubToken = localStorage.getItem("ops_github_token");
+window.addEventListener("load", () => { if (githubToken) showPanel(); });
+function loginWithGitHub() {
+  const state = Math.random().toString(36).substring(2);
+  sessionStorage.setItem("oauth_state", state);
+  window.location.href = `https://github.com/login/oauth/authorize?client_id=${GITHUB_CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&scope=read:user&state=${state}`;
+}
+function showPanel() {
+  document.getElementById("login-section").style.display = "none";
+  document.getElementById("panel-section").style.display = "block";
+  document.getElementById("username-display").textContent = localStorage.getItem("ops_github_user") || "";
+}
+function logout() {
+  localStorage.removeItem("ops_github_token");
+  localStorage.removeItem("ops_github_user");
+  githubToken = null;
+  document.getElementById("rds-result").innerHTML = "";
+  document.getElementById("panel-section").style.display = "none";
+  document.getElementById("login-section").style.display = "block";
+}
+async function callApi(action, extra={}) {
+  const res = await fetch(API_URL, { method: "POST", headers: {"Content-Type":"application/json"}, body: JSON.stringify({github_token: githubToken, action, ...extra}) });
+  const data = await res.json();
+  if (res.status === 401 || res.status === 403) { logout(); throw new Error(data.error || "Sin acceso"); }
+  if (!res.ok) throw new Error(data.error || "Error desconocido");
+  return data;
+}
+function statusBadge(s) {
+  if (s==="available") return `<span class="badge badge-green">${s}</span>`;
+  if (s==="stopped") return `<span class="badge badge-red">${s}</span>`;
+  if (["starting","stopping","rebooting","backing-up"].includes(s)) return `<span class="badge badge-amber">${s}</span>`;
+  return `<span class="badge badge-gray">${s}</span>`;
+}
+async function getRdsStatus() {
+  const btn = document.getElementById("btn-rds");
+  const result = document.getElementById("rds-result");
+  btn.disabled = true; btn.innerHTML = '<span class="spinner"></span>Consultando...'; result.innerHTML = "";
+  try {
+    const data = await callApi("rds_status");
+    result.innerHTML = `<div style="margin-top:1rem;">
+      <div class="status-row"><span class="status-key">Estado</span><span class="status-val">${statusBadge(data.status)}</span></div>
+      <div class="status-row"><span class="status-key">Instancia</span><span class="status-val">${data.class}</span></div>
+      <div class="status-row"><span class="status-key">Motor</span><span class="status-val">${data.engine}</span></div>
+      <div class="status-row"><span class="status-key">Storage</span><span class="status-val">${data.storage_gb} GB</span></div>
+      <div class="status-row"><span class="status-key">Multi-AZ</span><span class="status-val">${data.multi_az ? "Sí" : "No"}</span></div>
+      <div class="status-row"><span class="status-key">Endpoint</span><span class="status-val" style="font-size:11px;color:#555;">${data.endpoint}</span></div>
+    </div>`;
+  } catch(e) { result.innerHTML = `<div class="error-msg">${e.message}</div>`; }
+  finally { btn.disabled = false; btn.innerHTML = "Consultar estado de RDS"; }
+}
+</script>
+</body>
+</html>
