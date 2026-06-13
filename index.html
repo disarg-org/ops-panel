@@ -240,7 +240,9 @@ function loadStatus(client) {
     var critFlag = cpu > 30 || mem > 95 || !rdsOk;
 
     var mainPod = null;
-    (pods.pods || []).forEach(function(p) { if (p.name.indexOf("main-odoo") >= 0) mainPod = p; });
+    (pods.pods || []).forEach(function(p) {
+      if (p.name.indexOf("main-odoo") >= 0 && p.phase === "Running" && !p.name.match(/scale|rds-stop|staging|sync/)) mainPod = p;
+    });
     var podUp = mainPod && mainPod.phase === "Running" && mainPod.ready;
 
     var color = "green";
