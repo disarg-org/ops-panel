@@ -197,11 +197,15 @@ function dne(btnId) { var b=document.getElementById(btnId); b.disabled=false; b.
 function loadDash() {
   var grid = document.getElementById("cgrid");
   grid.innerHTML = CLIENTS.map(function(c) {
-    return '<div class="ccrd" id="card-'+c+'" onclick="showDetail(''+c+'')">' +
+    return '<div class="ccrd" id="card-'+c+'" data-client="'+c+'">' +
       '<div class="ccrd-top"><span class="cname">'+c+'</span><div class="sem" id="sem-'+c+'"></div></div>' +
       '<div class="pills" id="pills-'+c+'"><span class="pill">Cargando...</span></div>' +
       '</div>';
   }).join("");
+  document.getElementById("cgrid").addEventListener("click", function(e) {
+    var card = e.target.closest(".ccrd");
+    if (card) showDetail(card.getAttribute("data-client"));
+  });
   CLIENTS.forEach(function(c) {
     if (c === "domstor") { loadHealth(c); } else { loadStatus(c); }
   });
