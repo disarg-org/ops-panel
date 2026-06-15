@@ -1,0 +1,97 @@
+{
+  "fecha": "2026-06-15",
+  "descripcion": "Backup previo a agregar permisos de administracion (RDS Start/Stop/Reboot + RBAC patch deployments)",
+  "iam_policy": {
+    "RoleName": "disarg-ops-panel-role",
+    "PolicyName": "disarg-ops-panel-policy",
+    "PolicyDocument": {
+      "Version": "2012-10-17",
+      "Statement": [
+        {
+          "Sid": "RDSDescribe",
+          "Effect": "Allow",
+          "Action": [
+            "rds:DescribeDBInstances"
+          ],
+          "Resource": "arn:aws:rds:us-east-1:571600875792:db:*-rds-prod"
+        },
+        {
+          "Sid": "CloudWatchLogs",
+          "Effect": "Allow",
+          "Action": [
+            "logs:CreateLogGroup",
+            "logs:CreateLogStream",
+            "logs:PutLogEvents"
+          ],
+          "Resource": "*"
+        }
+      ]
+    }
+  },
+  "clusterrole": {
+    "apiVersion": "rbac.authorization.k8s.io/v1",
+    "kind": "ClusterRole",
+    "metadata": {
+      "name": "ops-panel-viewer"
+    },
+    "rules": [
+      {
+        "apiGroups": [
+          ""
+        ],
+        "resources": [
+          "pods",
+          "pods/log",
+          "nodes"
+        ],
+        "verbs": [
+          "get",
+          "list",
+          "watch"
+        ]
+      },
+      {
+        "apiGroups": [
+          "apps"
+        ],
+        "resources": [
+          "deployments"
+        ],
+        "verbs": [
+          "get",
+          "list",
+          "watch"
+        ]
+      },
+      {
+        "apiGroups": [
+          "batch"
+        ],
+        "resources": [
+          "cronjobs",
+          "jobs"
+        ],
+        "verbs": [
+          "get",
+          "list",
+          "watch"
+        ]
+      },
+      {
+        "apiGroups": [
+          "metrics.k8s.io"
+        ],
+        "resources": [
+          "pods",
+          "nodes"
+        ],
+        "verbs": [
+          "get",
+          "list"
+        ]
+      }
+    ]
+  },
+  "rollback_iam": "aws iam put-role-policy --role-name disarg-ops-panel-role --policy-name disarg-ops-panel-policy --policy-document file://backup-permisos-15jun2026.json (usar el campo iam_policy.PolicyDocument)",
+  "rollback_rbac": "kubectl apply con el contenido del campo clusterrole de este archivo"
+}
