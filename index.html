@@ -207,7 +207,7 @@ function loadDash() {
     if (card) showDetail(card.getAttribute("data-client"));
   });
   CLIENTS.forEach(function(c) {
-    if (c === "domstor") { loadHealth(c); } else { loadStatus(c); }
+    loadStatus(c);
   });
 }
 
